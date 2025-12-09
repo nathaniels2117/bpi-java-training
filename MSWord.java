@@ -1,7 +1,11 @@
 package ph.com.bpi.hello;
 
 
-public class MSWord implements Executable {
+public class MSWord extends Program {
+	
+	public MSWord(String name) {
+		this.setName(name);
+	}
 	
 	@Override
 	public void run() {

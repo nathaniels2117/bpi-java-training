@@ -1,7 +1,11 @@
 package ph.com.bpi.hello;
 
 
-public class MSExcel implements Executable {
+public class MSExcel extends Program {
+	
+	public MSExcel(String name) {
+		this.setName(name);
+	}
 	
 	@Override
 	public void run() {
