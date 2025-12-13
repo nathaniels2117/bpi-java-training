@@ -81,7 +81,7 @@ Create `logback.xml` in `src/` with the following:
 Open `BankAccountService.java` and complete all **30 TODO items**:
 
 **What to do:**
-- **TODO 1**: Create logger using `LoggerFactory.getLogger(BankAccountService.class)`
+- **TODO 1**: Import and create logger using `LoggerFactory.getLogger(BankAccountService.class)`
 - **TODO 2-30**: Add log statements and throw exceptions
 - Follow the parameter hints in each TODO comment
 - Use parameterized logging with `{}`
