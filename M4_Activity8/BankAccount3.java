@@ -1,11 +1,11 @@
-package M4_Activity7;
+package M4_Activity8;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BankAccount2 {
+public class BankAccount3 {
 
-    private static final Logger log = LoggerFactory.getLogger(M4Activity7.class);
+    private static final Logger log = LoggerFactory.getLogger(M4Activity8.class);
     private double balance = 10_000.0;
     
     public void withdraw(double amount) throws InvalidAmountException, InsufficientFundsException {
