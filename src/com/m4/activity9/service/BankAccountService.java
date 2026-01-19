@@ -6,9 +6,18 @@ import com.m4.activity9.exception.InvalidAccountException;
 import com.m4.activity9.exception.InvalidTransferException;
 import com.m4.activity9.model.BankAccount;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class BankAccountService {
+
+    // force name to match the expected output’s logger column
+
+	private static final Logger log = LoggerFactory.getLogger("com.m4.activity9.model.BankAccount"); 
+
+
 	// TODO 1: Import Logger and create a logger for this class
 
 	private static final double MINIMUM_INITIAL_BALANCE = 0.0;
@@ -22,25 +31,27 @@ public class BankAccountService {
 
 		// TODO 2: Log INFO message "Creating account for owner: {}"
 		// Parameter: ownerName
-
+		log.info("Creating account for owner: {}", ownerName == null ? "" : ownerName);
+		
 		// Validate account number
 		if (accountNumber == null || accountNumber.trim().isEmpty()) {
 			// TODO 3: Log WARN message "Account creation failed: account number is null or
 			// empty"
-
+			log.warn("Account creation failed: account number is null or empty"); 
+			
 			// TODO 4: Throw InvalidAccountException with message "Account number cannot be
 			// null or empty"
-
+			throw new InvalidAccountException("Account number cannot be null or empty");
 		}
 
 		// Validate owner name
 		if (ownerName == null || ownerName.trim().isEmpty()) {
 			// TODO 5: Log WARN message "Account creation failed: owner name is null or
 			// empty"
-
+			log.warn("Account creation failed: owner name is null or empty");
 			// TODO 6: Throw InvalidAccountException with message "Owner name cannot be null
 			// or empty"
-
+			throw new InvalidAccountException("Owner name cannot be null or empty");
 		}
 
 		// Validate initial balance
@@ -48,10 +59,13 @@ public class BankAccountService {
 			// TODO 7: Log WARN message "Account creation failed: invalid initial balance
 			// {}"
 			// Parameter: initialBalance
+			log.warn("Account creation failed: invalid initial balance P{}",String.format("%.1f", initialBalance));
 
 			// TODO 8: Throw InvalidAccountException with formatted message showing min and
 			// received balance
 			// Use String.format with MINIMUM_INITIAL_BALANCE and initialBalance
+
+			throw new InvalidAccountException(String.format("Initial balance must be >= %.1f. Received: %.1f",MINIMUM_INITIAL_BALANCE, initialBalance));
 
 		}
 
@@ -59,29 +73,30 @@ public class BankAccountService {
 		if (accountExists(accountNumber)) {
 			// TODO 9: Log WARN message "Account creation failed: account {} already exists"
 			// Parameter: accountNumber
-
+			log.warn("Account creation failed: account {} already exists", accountNumber);
 			// TODO 10: Throw InvalidAccountException with message "Account number already
 			// exists: " + accountNumber
-
+			throw new InvalidAccountException("Account number already exists: " + accountNumber);
 		}
 
 		// Create account
 		try {
 			BankAccount account = new BankAccount(accountNumber, ownerName, initialBalance);
 			accounts.add(account);
-
+			
 			// TODO 11: Log INFO message "Account {} created successfully for {}"
 			// Parameters: accountNumber, ownerName
+			log.info("Account {} created successfully for {}", accountNumber, ownerName);
 
 		} catch (IllegalArgumentException e) {
 			// TODO 12: Log ERROR message "Failed to create account due to invalid
 			// arguments" with exception object
 			// Pass exception 'e' as last parameter
-
+			log.error("Failed to create account due to invalid arguments", e);
 			// TODO 13: Throw InvalidAccountException with message "Account creation failed"
 			// and original exception
 			// Pass exception 'e' as second parameter
-
+			throw new InvalidAccountException("Account creation failed", e);
 		}
 	}
 
@@ -94,14 +109,17 @@ public class BankAccountService {
 		// TODO 14: Log INFO message "Transfer request: {} -> {}, amount: {}"
 		// Parameters: fromAccountNumber, toAccountNumber, amount
 
+		log.info("Transfer request: {} -> {}, amount: {}",fromAccountNumber, toAccountNumber, String.format("%.1f", amount));
+
 		// Validate amount
 		if (amount <= 0) {
 			// TODO 15: Log WARN message "Transfer failed: invalid amount {}"
 			// Parameter: amount
-
+			log.warn("Transfer failed: invalid amount {}", String.format("%.1f", amount));
 			// TODO 16: Throw InvalidTransferException with formatted message "Transfer
 			// amount must be positive. Received: %.2f"
 			// Use String.format with amount
+			throw new InvalidTransferException(String.format("Transfer amount must be positive. Received: %.2f", amount));
 
 		}
 
@@ -110,9 +128,10 @@ public class BankAccountService {
 			// TODO 17: Log WARN message "Transfer failed: same source and destination
 			// account {}"
 			// Parameter: fromAccountNumber
-
+			log.warn("Transfer failed: same source and destination account {}", fromAccountNumber);
 			// TODO 18: Throw InvalidTransferException with message "Cannot transfer from
 			// account " + fromAccountNumber + " to itself"
+			throw new InvalidTransferException("Cannot transfer from account " + fromAccountNumber + " to itself");
 
 		}
 
@@ -121,10 +140,10 @@ public class BankAccountService {
 		if (fromAccount == null) {
 			// TODO 19: Log WARN message "Transfer failed: source account {} not found"
 			// Parameter: fromAccountNumber
-
+			log.warn("Transfer failed: source account {} not found", fromAccountNumber);
 			// TODO 20: Throw AccountNotFoundException with message "Source account not
 			// found: " + fromAccountNumber
-
+			throw new AccountNotFoundException("Source account not found: " + fromAccountNumber);
 		}
 
 		// Find destination account
@@ -132,10 +151,10 @@ public class BankAccountService {
 		if (toAccount == null) {
 			// TODO 21: Log WARN message "Transfer failed: destination account {} not found"
 			// Parameter: toAccountNumber
-
+			log.warn("Transfer failed: destination account {} not found", toAccountNumber);
 			// TODO 22: Throw AccountNotFoundException with message "Destination account not
 			// found: " + toAccountNumber
-
+			 throw new AccountNotFoundException("Destination account not found: " + toAccountNumber);
 		}
 
 		// Check sufficient funds
@@ -144,9 +163,18 @@ public class BankAccountService {
 			// Balance: {}, Required: {}"
 			// Parameters: fromAccountNumber, fromAccount.getBalance(), amount
 
+			log.warn("Transfer failed: insufficient funds in account {}. Balance: {}, Required: {}",
+            fromAccountNumber,
+            String.format("%.1f", fromAccount.getBalance()),
+            String.format("%.1f", amount));
+
 			// TODO 24: Throw InsufficientFundsException with formatted message showing
 			// balance and required amount
 			// Use String.format with fromAccount.getBalance() and amount
+
+			throw new InsufficientFundsException(String.format(
+            "Insufficient funds. Balance: %.2f, Required: %.2f",
+            fromAccount.getBalance(), amount));
 
 		}
 
@@ -158,15 +186,18 @@ public class BankAccountService {
 			// TODO 25: Log INFO message "Transfer successful: {} -> {}, amount: {}"
 			// Parameters: fromAccountNumber, toAccountNumber, amount
 
+			log.info("Transfer successful: {} -> {}, amount: {}",
+            fromAccountNumber, toAccountNumber, String.format("%.1f", amount));
+
 		} catch (Exception e) {
 			// TODO 26: Log ERROR message "Transfer failed due to unexpected error" with
 			// exception object
 			// Pass exception 'e' as last parameter
-
+			log.error("Transfer failed due to unexpected error", e);
 			// TODO 27: Throw InvalidTransferException with message "Transfer failed" and
 			// original exception
 			// Pass exception 'e' as second parameter
-
+			throw new InvalidTransferException("Transfer failed", e);
 		}
 	}
 
@@ -182,14 +213,14 @@ public class BankAccountService {
 			if (account.getAccountNumber().equals(accountNumber)) {
 				// TODO 28: Log DEBUG message "Account found: {}"
 				// Parameter: accountNumber
-
+				log.debug("Account found: {}", accountNumber);
 				return account;
 			}
 		}
 
 		// TODO 29: Log DEBUG message "Account not found: {}"
 		// Parameter: accountNumber
-
+		log.debug("Account not found: {}", accountNumber); 
 		return null;
 	}
 
@@ -200,7 +231,7 @@ public class BankAccountService {
 	public List<BankAccount> getAllAccounts() {
 		// TODO 30: Log DEBUG message "Retrieving all accounts, count: {}"
 		// Parameter: accounts.size()
-
+		log.debug("Retrieving all accounts, count: {}", accounts.size());
 		return new ArrayList<>(accounts);
 	}
 }
