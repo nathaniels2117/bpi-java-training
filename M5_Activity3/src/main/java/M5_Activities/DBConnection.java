@@ -3,6 +3,7 @@ package M5_Activities;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBConnection {
 
@@ -15,7 +16,7 @@ public class DBConnection {
     	try	{
     		
     		Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Connected successfully");
+            System.out.println("Connected successfully");  
     		
     	} catch (Exception e) {
     		
@@ -24,4 +25,9 @@ public class DBConnection {
     	}
     	
     }
+    
+    public static Connection getConnection() throws SQLException {
+    	return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+
 }
