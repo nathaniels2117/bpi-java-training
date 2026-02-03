@@ -1,7 +1,5 @@
 package com.bpi.model;
 
-import util.EntityManagerUtil;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -41,8 +39,9 @@ public class Student {
     
     @OneToMany(
            mappedBy = "student",
-           cascade = CascadeType.ALL, 
-           orphanRemoval = true  
+           cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+           fetch = FetchType.LAZY
+
        )
     private List<Course> courses = new ArrayList<>();
 
