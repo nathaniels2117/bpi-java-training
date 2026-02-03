@@ -3,6 +3,8 @@ package com.bpi.model;
 import util.EntityManagerUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.*;
+import java.util.List;
+import java.util.ArrayList;
 
 
 @Entity
@@ -36,6 +38,14 @@ public class Student {
         nullable = false
     )
     private String email;
+    
+    @OneToMany(
+           mappedBy = "student",
+           cascade = CascadeType.ALL, 
+           orphanRemoval = true  
+       )
+    private List<Course> courses = new ArrayList<>();
+
 
     public Student() {}
 
@@ -67,5 +77,15 @@ public class Student {
     public void setEmail(String email) { 
     	this.email = email; 
     }
+    
+    public List<Course> getCourses() { 
+    	return courses; 
+    }
+
+	public void addCourse(Course course) {
+		courses.add(course);
+        course.setStudent(this); 
+	}
+
 
 }

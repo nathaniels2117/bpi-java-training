@@ -61,6 +61,11 @@
 	    <version>7.1.11.Final</version>
 	</dependency>
 
+	<dependency>
+		<groupId>M5_Activities</groupId>
+		<artifactId>M5_Activity</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
   </dependencies>
 
   <build>
