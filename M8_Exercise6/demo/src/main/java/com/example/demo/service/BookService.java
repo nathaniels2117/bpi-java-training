@@ -15,7 +15,7 @@ public class BookService {
     
     @PostConstruct
     public void init() {
-        logger.log("M8 Acitivty 2 Book Service initialized!");
+        logger.log("M8 Exercise 6 Book Service initialized!");
     }
     
 }
