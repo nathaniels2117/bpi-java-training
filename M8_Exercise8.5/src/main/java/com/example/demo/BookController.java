@@ -20,6 +20,7 @@ public class BookController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     public List<Book> getAllBooks() {
         return books;
     }
@@ -41,7 +42,6 @@ public class BookController {
         return newBook;
     }
     
-
 	@GetMapping("/search")
 	@ResponseStatus(HttpStatus.OK)
 	public List<Book> search(
