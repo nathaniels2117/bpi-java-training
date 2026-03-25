@@ -12,8 +12,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -23,7 +21,9 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/public/**").permitAll()
+                .requestMatchers("/home").hasAnyRole("USER", "MANAGER")
+                .requestMatchers("/dashboard").hasRole("USER")
+                .requestMatchers("/reports").hasRole("MANAGER")
                 .anyRequest().authenticated()
             )
             .httpBasic(withDefaults());
@@ -31,22 +31,26 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
 
-        UserDetails user = User.withUsername("user")
+        UserDetails dev1 = User.withUsername("dev_1")
                 .password(passwordEncoder().encode("password"))
                 .roles("USER")
                 .build();
 
-        UserDetails admin = User.withUsername("admin")
+        UserDetails dev2 = User.withUsername("dev_2")
                 .password(passwordEncoder().encode("password"))
-                .roles("ADMIN")
+                .roles("USER")
                 .build();
-        
-        System.out.println("BCrypt Password : " + passwordEncoder().encode("password"));
-        
-        return new InMemoryUserDetailsManager(user, admin);
+
+        UserDetails mgr1 = User.withUsername("mgr_1")
+                .password(passwordEncoder().encode("password"))
+                .roles("MANAGER")
+                .build();
+
+        return new InMemoryUserDetailsManager(dev1, dev2, mgr1);
     }
     
     @Bean
