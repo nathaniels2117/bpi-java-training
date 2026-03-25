@@ -1,5 +1,7 @@
 package com.bpi.traning.M9_module.config;
 
+import com.bpi.traning.M9_module.security.CustomAccessDeniedHandler;
+import com.bpi.traning.M9_module.security.CustomAuthEntryPoint;
 import com.bpi.traning.M9_module.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,14 +18,18 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
+
+@Bean
     SecurityFilterChain filterChain(HttpSecurity http,
-                                    CustomUserDetailsService service) throws Exception {
+                                    CustomUserDetailsService service,
+                                    CustomAuthEntryPoint customEntryPoint,
+                                    CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
+
 
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/users").permitAll()
+                .requestMatchers("/users/**").permitAll()
                 .requestMatchers("/home").hasAnyRole("USER", "MANAGER")
                 .requestMatchers("/dashboard").hasRole("USER")
                 .requestMatchers("/reports").hasRole("MANAGER")
@@ -31,9 +37,16 @@ public class SecurityConfig {
         );
 
         http.httpBasic(basic -> {});
+
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint(customEntryPoint) 
+                .accessDeniedHandler(accessDeniedHandler)  
+        );
+
         http.authenticationProvider(authProvider(service));
         return http.build();
     }
+
 
     @Bean
     DaoAuthenticationProvider authProvider(CustomUserDetailsService service) {
