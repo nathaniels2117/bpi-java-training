@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 
 @Configuration
@@ -32,15 +35,23 @@ public class SecurityConfig {
     public InMemoryUserDetailsManager userDetailsService() {
 
         UserDetails user = User.withUsername("user")
-                .password("{noop}password")
+                .password(passwordEncoder().encode("password"))
                 .roles("USER")
                 .build();
 
         UserDetails admin = User.withUsername("admin")
-                .password("{noop}password")
+                .password(passwordEncoder().encode("password"))
                 .roles("ADMIN")
                 .build();
-
+        
+        System.out.println("BCrypt Password : " + passwordEncoder().encode("password"));
+        
         return new InMemoryUserDetailsManager(user, admin);
     }
+    
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 }
